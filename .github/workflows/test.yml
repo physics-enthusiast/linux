@@ -1,0 +1,15 @@
+name: Test
+on:
+  push:
+  workflow_dispatch:
+concurrency:
+  group: test
+  cancel-in-progress: true
+
+jobs:
+  test1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          ./tools/testing/kunit/kunit.py run
