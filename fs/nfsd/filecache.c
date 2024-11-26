@@ -398,7 +398,7 @@ nfsd_file_put(struct nfsd_file *nf)
  * reference to the associated nn->nfsd_serv.
  */
 void
-nfsd_file_put_local(struct nfsd_file *nf)
+nfsd_file_put_local(struct nfsd_file *nf) __must_hold(rcu)
 {
 	struct net *net = nf->nf_net;
 
@@ -487,7 +487,6 @@ void nfsd_file_net_dispose(struct nfsd_net *nn)
  * nfsd_file_lru_cb - Examine an entry on the LRU list
  * @item: LRU entry to examine
  * @lru: controlling LRU
- * @lock: LRU list lock (unused)
  * @arg: dispose list
  *
  * Return values:
@@ -497,9 +496,7 @@ void nfsd_file_net_dispose(struct nfsd_net *nn)
  */
 static enum lru_status
 nfsd_file_lru_cb(struct list_head *item, struct list_lru_one *lru,
-		 spinlock_t *lock, void *arg)
-	__releases(lock)
-	__acquires(lock)
+		 void *arg)
 {
 	struct list_head *head = arg;
 	struct nfsd_file *nf = list_entry(item, struct nfsd_file, nf_lru);
@@ -751,7 +748,7 @@ nfsd_file_cache_init(void)
 
 	ret = rhltable_init(&nfsd_file_rhltable, &nfsd_file_rhash_params);
 	if (ret)
-		return ret;
+		goto out;
 
 	ret = -ENOMEM;
 	nfsd_file_slab = KMEM_CACHE(nfsd_file, 0);
@@ -803,6 +800,8 @@ nfsd_file_cache_init(void)
 
 	INIT_DELAYED_WORK(&nfsd_filecache_laundrette, nfsd_file_gc_worker);
 out:
+	if (ret)
+		clear_bit(NFSD_FILE_CACHE_UP, &nfsd_file_flags);
 	return ret;
 out_notifier:
 	lease_unregister_notifier(&nfsd_file_lease_notifier);

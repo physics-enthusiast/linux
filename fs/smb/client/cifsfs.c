@@ -546,6 +546,30 @@ static int cifs_show_devname(struct seq_file *m, struct dentry *root)
 	return 0;
 }
 
+static void
+cifs_show_upcall_target(struct seq_file *s, struct cifs_sb_info *cifs_sb)
+{
+	if (cifs_sb->ctx->upcall_target == UPTARGET_UNSPECIFIED) {
+		seq_puts(s, ",upcall_target=app");
+		return;
+	}
+
+	seq_puts(s, ",upcall_target=");
+
+	switch (cifs_sb->ctx->upcall_target) {
+	case UPTARGET_APP:
+		seq_puts(s, "app");
+		break;
+	case UPTARGET_MOUNT:
+		seq_puts(s, "mount");
+		break;
+	default:
+		/* shouldn't ever happen */
+		seq_puts(s, "unknown");
+		break;
+	}
+}
+
 /*
  * cifs_show_options() is for displaying mount options in /proc/mounts.
  * Not all settable options are displayed but most of the important
@@ -562,6 +586,7 @@ cifs_show_options(struct seq_file *s, struct dentry *root)
 	seq_show_option(s, "vers", tcon->ses->server->vals->version_string);
 	cifs_show_security(s, tcon->ses);
 	cifs_show_cache_flavor(s, cifs_sb);
+	cifs_show_upcall_target(s, cifs_sb);
 
 	if (tcon->no_lease)
 		seq_puts(s, ",nolease");
@@ -1780,7 +1805,7 @@ static int cifs_init_netfs(void)
 nomem_subreqpool:
 	kmem_cache_destroy(cifs_io_subrequest_cachep);
 nomem_subreq:
-	mempool_destroy(&cifs_io_request_pool);
+	mempool_exit(&cifs_io_request_pool);
 nomem_reqpool:
 	kmem_cache_destroy(cifs_io_request_cachep);
 nomem_req:

@@ -795,18 +795,6 @@ cifs_discard_from_socket(struct TCP_Server_Info *server, size_t to_read)
 }
 
 int
-cifs_read_page_from_socket(struct TCP_Server_Info *server, struct page *page,
-	unsigned int page_offset, unsigned int to_read)
-{
-	struct msghdr smb_msg = {};
-	struct bio_vec bv;
-
-	bvec_set_page(&bv, page, to_read, page_offset);
-	iov_iter_bvec(&smb_msg.msg_iter, ITER_DEST, &bv, 1, to_read);
-	return cifs_readv_from_socket(server, &smb_msg);
-}
-
-int
 cifs_read_iter_from_socket(struct TCP_Server_Info *server, struct iov_iter *iter,
 			   unsigned int to_read)
 {
@@ -1049,6 +1037,7 @@ clean_demultiplex_info(struct TCP_Server_Info *server)
 		 */
 	}
 
+	put_net(cifs_net_ns(server));
 	kfree(server->leaf_fullpath);
 	kfree(server);
 
@@ -1646,8 +1635,6 @@ cifs_put_tcp_session(struct TCP_Server_Info *server, int from_reconnect)
 
 	/* srv_count can never go negative */
 	WARN_ON(server->srv_count < 0);
-
-	put_net(cifs_net_ns(server));
 
 	list_del_init(&server->tcp_ses_list);
 	spin_unlock(&cifs_tcp_ses_lock);
@@ -2352,6 +2339,26 @@ cifs_get_smb_ses(struct TCP_Server_Info *server, struct smb3_fs_context *ctx)
 
 	ses->sectype = ctx->sectype;
 	ses->sign = ctx->sign;
+
+	/*
+	 *Explicitly marking upcall_target mount option for easier handling
+	 * by cifs_spnego.c and eventually cifs.upcall.c
+	 */
+
+	switch (ctx->upcall_target) {
+	case UPTARGET_UNSPECIFIED: /* default to app */
+	case UPTARGET_APP:
+		ses->upcall_target = UPTARGET_APP;
+		break;
+	case UPTARGET_MOUNT:
+		ses->upcall_target = UPTARGET_MOUNT;
+		break;
+	default:
+		// should never happen
+		ses->upcall_target = UPTARGET_APP;
+		break;
+	}
+
 	ses->local_nls = load_nls(ctx->local_nls->charset);
 
 	/* add server as first channel */
@@ -3082,12 +3089,21 @@ generic_ip_connect(struct TCP_Server_Info *server)
 	if (server->ssocket) {
 		socket = server->ssocket;
 	} else {
-		rc = __sock_create(cifs_net_ns(server), sfamily, SOCK_STREAM,
+		struct net *net = cifs_net_ns(server);
+		struct sock *sk;
+
+		rc = __sock_create(net, sfamily, SOCK_STREAM,
 				   IPPROTO_TCP, &server->ssocket, 1);
 		if (rc < 0) {
 			cifs_server_dbg(VFS, "Error %d creating socket\n", rc);
 			return rc;
 		}
+
+		sk = server->ssocket->sk;
+		__netns_tracker_free(net, &sk->ns_tracker, false);
+		sk->sk_net_refcnt = 1;
+		get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
+		sock_inuse_add(net, 1);
 
 		/* BB other socket options to set KEEPALIVE, NODELAY? */
 		cifs_dbg(FYI, "Socket created\n");
