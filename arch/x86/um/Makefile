@@ -9,13 +9,13 @@ else
 	BITS := 64
 endif
 
-obj-y = subarch.o
+obj-y = subarch.o host-subarch.o
 
 host-subarch-y = bugs_$(BITS).o delay.o fault.o \
 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
 	stub_segv.o \
 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
-	mem_$(BITS).o host-subarch.o os-Linux/
+	mem_$(BITS).o os-Linux/
 
 ifeq ($(CONFIG_X86_32),y)
 
