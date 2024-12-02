@@ -12,5 +12,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          make ARCH=um
+          make ARCH=um defconfig
           ./tools/testing/kunit/kunit.py run
