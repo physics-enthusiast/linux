@@ -105,6 +105,16 @@ output-symdump := modules-only.symvers
 else
 modpost-args += vmlinux.o
 modpost-deps += vmlinux.o
+
+ifdef CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX
+ifeq ($(wildcard vmlinux.arch.o),)
+missing-input += vmlinux.arch.o
+else
+modpost-args += vmlinux.arch.o
+modpost-deps += vmlinux.arch.o
+endif
+endif
+
 output-symdump := $(if $(KBUILD_MODULES), Module.symvers, vmlinux.symvers)
 endif
 
