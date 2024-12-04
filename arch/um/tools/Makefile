@@ -3,7 +3,7 @@
 SUBARCH_DIR := arch/$(HEADER_ARCH)/um
 UM_DIR := arch/um
 
-$(SUBARCH_DIR)/subarch.o $(SUBARCH_DIR)/built-in.a:
+$(SUBARCH_DIR)/built-in.a:
 	$(Q)$(MAKE) $(build)=$(SUBARCH_DIR)
 
 $(UM_DIR)/os-Linux/built-in.a:
@@ -12,5 +12,5 @@ $(UM_DIR)/os-Linux/built-in.a:
 quiet_cmd_ld_vmlinux_arch.o = LD      $@
 	cmd_ld_vmlinux_arch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $^
 
-$(obj)/vmlinux.arch.o: $(SUBARCH_DIR)/subarch.o $(SUBARCH_DIR)/built-in.a $(UM_DIR)/os-Linux/built-in.a FORCE
+$(obj)/vmlinux.arch.o: $(SUBARCH_DIR)/built-in.a $(UM_DIR)/os-Linux/built-in.a FORCE
 	$(call if_changed,ld_vmlinux.arch.o)
