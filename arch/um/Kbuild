@@ -2,9 +2,13 @@
 
 obj-y += kernel/ drivers/ subarch.o
 
-quiet_cmd_cc_subarch.o = CC      $@
-	cmd_cc_subarch.o = $(Q)$(MAKE) $(build)=$(SUBARCH_DIR) $<; cp $< $@
+SUBARCH_DIR := arch/$(HEADER_ARCH)/um
 
-arch/$(HEADER_ARCH)/um/subarch.o: ;
-$(obj)/subarch.o: arch/$(HEADER_ARCH)/um/subarch.o FORCE
+quiet_cmd_cc_subarch.o = CC      $@
+	cmd_cc_subarch.o = $(Q)$(MAKE) $(build)=$(SUBARCH_DIR) $@
+
+$(SUBARCH_DIR)/subarch.o: FORCE
 	$(call if_changed,cc_subarch.o)
+
+$(obj)/subarch.o: $(SUBARCH_DIR)/subarch.o FORCE
+	$(call if_changed,copy)
