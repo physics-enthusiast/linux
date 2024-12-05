@@ -25,3 +25,10 @@ $(USER_OBJS) $(UNPROFILE_OBJS): \
 define unprofile
 	$(patsubst -pg,,$(patsubst -fprofile-arcs -ftest-coverage,,$(1)))
 endef
+
+ifneq ($(subarch-y),)
+quiet_cmd_ld_subarch.o = LD      $@
+	cmd_ld_subarch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $(filter-out FORCE, $^)
+$(obj)/subarch.o: $(subarch-y) FORCE
+	$(call if_changed,ld_subarch.o)
+endif
