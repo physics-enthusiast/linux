@@ -9,8 +9,8 @@ $(SUBARCH_DIR)/built-in.a:
 $(UM_DIR)/os-Linux/built-in.a:
 	$(Q)$(MAKE) $(build)=$(UM_DIR)/os-Linux need-builtin=1 need-modorder=1
 
-quiet_cmd_ld_vmlinux_arch.o = LD      $@
-	cmd_ld_vmlinux_arch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $(filter-out FORCE,$^)
+quiet_cmd_ld_vmlinux.arch.o = LD      $@
+	cmd_ld_vmlinux.arch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $(filter-out FORCE,$^)
 
 $(obj)/vmlinux.arch.o: $(SUBARCH_DIR)/built-in.a $(UM_DIR)/os-Linux/built-in.a FORCE
 	$(call if_changed,ld_vmlinux.arch.o)
