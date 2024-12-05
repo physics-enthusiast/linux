@@ -2,12 +2,10 @@
 
 obj-y += kernel/ drivers/ subarch.o
 
-SUBARCH_DIR := arch/$(HEADER_ARCH)/um
+$(HOST_DIR)/subarch.o:
+	$(Q)$(MAKE) $(build)=$(HOST_DIR) $@
 
-$(SUBARCH_DIR)/subarch.o:
-	$(Q)$(MAKE) $(build)=$(SUBARCH_DIR) $@
-
-$(obj)/subarch.o: $(SUBARCH_DIR)/subarch.o FORCE
+$(obj)/subarch.o: $(HOST_DIR)/subarch.o FORCE
 	$(call if_changed,copy)
 
 targets += subarch.o
