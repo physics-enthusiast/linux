@@ -14,3 +14,5 @@ quiet_cmd_ld_vmlinux.arch.o = LD      $@
 
 $(obj)/vmlinux.arch.o: $(SUBARCH_DIR)/built-in.a $(UM_DIR)/os-Linux/built-in.a FORCE
 	$(call if_changed,ld_vmlinux.arch.o)
+
+targets += vmlinux.arch.o
