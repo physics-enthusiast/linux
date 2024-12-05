@@ -10,5 +10,7 @@ $(SUBARCH_DIR)/subarch.o:
 $(obj)/subarch.o: $(SUBARCH_DIR)/subarch.o FORCE
 	$(call if_changed,copy)
 
+targets += subarch.o
+
 # for cleaning
 subdir- += tools
