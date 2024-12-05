@@ -26,7 +26,7 @@ ifdef CONFIG_ARCH_WANTS_PRE_LINK_VMLINUX
 vmlinux: arch/$(SRCARCH)/tools/vmlinux.arch.o
 
 arch/$(SRCARCH)/tools/vmlinux.arch.o: vmlinux.o FORCE
-	$(Q)$(MAKE) $(build)=arch/$(SRCARCH)/tools $@
+	$(MAKE) $(build)=arch/$(SRCARCH)/tools $@
 endif
 
 ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
