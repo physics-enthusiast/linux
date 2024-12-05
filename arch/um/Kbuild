@@ -11,4 +11,4 @@ $(obj)/subarch.o: $(SUBARCH_DIR)/subarch.o FORCE
 	$(call if_changed,copy)
 
 # for cleaning
-subdir- += tools os-Linux
+subdir- += tools
