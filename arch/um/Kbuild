@@ -5,7 +5,7 @@ obj-y += kernel/ drivers/ subarch.o
 SUBARCH_DIR := arch/$(HEADER_ARCH)/um
 
 $(SUBARCH_DIR)/subarch.o:
-	$(MAKE) $(build)=$(SUBARCH_DIR) $@
+	$(Q)$(MAKE) $(build)=$(SUBARCH_DIR) $@
 
 $(obj)/subarch.o: $(SUBARCH_DIR)/subarch.o FORCE
 	$(call if_changed,copy)
