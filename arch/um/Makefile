@@ -35,7 +35,6 @@ ifdef CONFIG_64BIT
 endif
 
 HOST_DIR := arch/$(HEADER_ARCH)
-SUBARCH_DIR := $(HOST_DIR)/um
 
 include $(srctree)/$(ARCH_DIR)/Makefile-skas
 include $(srctree)/$(HOST_DIR)/Makefile.um
@@ -150,6 +149,6 @@ MRPROPER_FILES += $(HOST_DIR)/include/generated
 archclean:
 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
 		-o -name '*.gcov' \) -type f -print | xargs rm -f
-	$(Q)$(MAKE) $(clean)=$(SUBARCH_DIR)
+	$(Q)$(MAKE) $(clean)=$(HOST_DIR)/um
 
-export HEADER_ARCH SUBARCH SUBARCH_DIR USER_CFLAGS CFLAGS_NO_HARDENING DEV_NULL_PATH
+export HEADER_ARCH SUBARCH HOST_DIR USER_CFLAGS CFLAGS_NO_HARDENING DEV_NULL_PATH
