@@ -16,3 +16,5 @@ $(obj)/vmlinux.arch.o: $(SUBARCH_DIR)/built-in.a $(UM_DIR)/os-Linux/built-in.a F
 	$(call if_changed,ld_vmlinux.arch.o)
 
 targets += vmlinux.arch.o
+
+subdir- += ../os-Linux
