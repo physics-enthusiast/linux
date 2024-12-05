@@ -1,18 +1,15 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-SUBARCH_DIR := arch/$(HEADER_ARCH)/um
-UM_DIR := arch/um
+$(HOST_DIR)/built-in.a:
+	$(Q)$(MAKE) $(build)=$(HOST_DIR) need-builtin=1 need-modorder=1
 
-$(SUBARCH_DIR)/built-in.a:
-	$(Q)$(MAKE) $(build)=$(SUBARCH_DIR) need-builtin=1 need-modorder=1
-
-$(UM_DIR)/os-Linux/built-in.a:
-	$(Q)$(MAKE) $(build)=$(UM_DIR)/os-Linux need-builtin=1 need-modorder=1
+arch/um/os-Linux/built-in.a:
+	$(Q)$(MAKE) $(build)=arch/um/os-Linux need-builtin=1 need-modorder=1
 
 quiet_cmd_ld_vmlinux.arch.o = LD      $@
 	cmd_ld_vmlinux.arch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $(filter-out FORCE,$^)
 
-$(obj)/vmlinux.arch.o: $(SUBARCH_DIR)/built-in.a $(UM_DIR)/os-Linux/built-in.a FORCE
+$(obj)/vmlinux.arch.o: $(HOST_DIR)/built-in.a arch/um/os-Linux/built-in.a FORCE
 	$(call if_changed,ld_vmlinux.arch.o)
 
 targets += vmlinux.arch.o
