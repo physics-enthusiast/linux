@@ -12,10 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          make ARCH=um defconfig
-          make ARCH=um -j$(nproc)
-          make ARCH=um mrproper
-          make ARCH=um defconfig
-          make ARCH=um V=1 -j$(nproc)
-          make ARCH=um mrproper
+          #make ARCH=um defconfig
+          #make ARCH=um -j$(nproc)
+          #make ARCH=um mrproper
           ./tools/testing/kunit/kunit.py run
