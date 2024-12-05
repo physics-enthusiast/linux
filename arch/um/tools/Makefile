@@ -4,10 +4,10 @@ SUBARCH_DIR := arch/$(HEADER_ARCH)/um
 UM_DIR := arch/um
 
 $(SUBARCH_DIR)/built-in.a:
-	$(MAKE) $(build)=$(SUBARCH_DIR)
+	$(Q)$(MAKE) $(build)=$(SUBARCH_DIR) need-builtin=1 need-modorder=1
 
 $(UM_DIR)/os-Linux/built-in.a:
-	$(MAKE) $(build)=$(UM_DIR)/os-Linux
+	$(Q)$(MAKE) $(build)=$(UM_DIR)/os-Linux need-builtin=1 need-modorder=1
 
 quiet_cmd_ld_vmlinux_arch.o = LD      $@
 	cmd_ld_vmlinux_arch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $(filter-out FORCE,$^)
