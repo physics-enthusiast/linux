@@ -28,8 +28,7 @@ endef
 
 ifneq ($(subarch-y),)
 subarch-y := $(patsubst %/, %/built-in.a, $(subarch-y))
-real-subarch-y := $(call real-search, $(subarch-y), .o, -objs -y)
-subdir-subarch := $(sort $(filter %/built-in.a, $(real-subarch-y)))
+subdir-subarch := $(sort $(filter %/built-in.a, $(subarch-y)))
 
 $(addprefix $(obj)/,$(subdir-subarch)):
 	$(Q)$(MAKE) $(build)=$(addprefix $(obj)/,$(patsubst %/,%,$(dir $@))) need-builtin=1 need-modorder=1
