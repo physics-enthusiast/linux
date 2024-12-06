@@ -39,5 +39,5 @@ $(obj)/subarch.o: $(addprefix $(obj)/,$(subarch-y)) FORCE
 
 targets += subarch.o $(subarch-y)
 
-subdir- += $(foreach m,$(subdir-subarch),$(patsubst %/built-in.a, %, m))
+subdir- += $(foreach m,$(subdir-subarch),$(patsubst %/built-in.a, %, $(m)))
 endif
