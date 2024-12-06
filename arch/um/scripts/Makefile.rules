@@ -27,9 +27,18 @@ define unprofile
 endef
 
 ifneq ($(subarch-y),)
+subarch-y := $(patsubst %/, %/built-in.a, $(subarch-y))
+real-subarch-y := $(call real-search, $(subarch-y), .o, -objs -y)
+subdir-subarch := $(sort $(filter %/built-in.a, $(real-subarch-y)))
+
+$(subdir-subarch):
+	$(Q)$(MAKE) $(build)=$(patsubst %/,%,$(dir $@)) need-builtin=1 need-modorder=1
 quiet_cmd_ld_subarch.o = LD      $@
 	cmd_ld_subarch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $(filter-out FORCE,$^)
-$(obj)/subarch.o: $(addprefix $(obj)/,$(subarch-y)) FORCE
+$(obj)/subarch.o: $(addprefix $(obj)/,$(real-subarch-y)) FORCE
 	$(call if_changed,ld_subarch.o)
-targets += subarch.o $(subarch-y)
+
+targets += subarch.o $(real-subarch-y)
+
+subdir- += $(foreach m,$(subdir-subarch),$(patsubst %/,%,$(dir m)))
 endif
