@@ -35,10 +35,10 @@ $(addprefix $(obj)/,$(subdir-subarch)):
 	$(Q)$(MAKE) $(build)=$(addprefix $(obj)/,$(patsubst %/,%,$(dir $@))) need-builtin=1 need-modorder=1
 quiet_cmd_ld_subarch.o = LD      $@
 	cmd_ld_subarch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $(filter-out FORCE,$^)
-$(obj)/subarch.o: $(addprefix $(obj)/,$(real-subarch-y)) FORCE
+$(obj)/subarch.o: $(addprefix $(obj)/,$(subarch-y)) FORCE
 	$(call if_changed,ld_subarch.o)
 
-targets += subarch.o $(real-subarch-y)
+targets += subarch.o $(subarch-y)
 
 subdir- += $(foreach m,$(subdir-subarch),$(patsubst %/,%,$(dir m)))
 endif
