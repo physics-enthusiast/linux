@@ -31,7 +31,7 @@ subarch-y := $(patsubst %/, %/built-in.a, $(subarch-y))
 subdir-subarch := $(sort $(filter %/built-in.a, $(subarch-y)))
 
 $(addprefix $(obj)/,$(subdir-subarch)):
-	$(Q)$(MAKE) $(build)=$(addprefix $(obj)/,$(patsubst %/,%,$(dir $@))) need-builtin=1 need-modorder=1
+	$(MAKE) $(build)=$(addprefix $(obj)/,$(patsubst %/,%,$(dir $@))) need-builtin=1 need-modorder=1
 quiet_cmd_ld_subarch.o = LD      $@
 	cmd_ld_subarch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $(filter-out FORCE,$^)
 $(obj)/subarch.o: $(addprefix $(obj)/,$(subarch-y)) FORCE
