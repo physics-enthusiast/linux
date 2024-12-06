@@ -1,5 +1,4 @@
 # SPDX-License-Identifier: GPL-2.0
-core-y += arch/x86/crypto/
 
 #
 # Disable SSE and other FP/SIMD instructions to match normal x86
