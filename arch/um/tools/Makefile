@@ -9,7 +9,7 @@ arch/um/os-Linux/built-in.a:
 quiet_cmd_ld_vmlinux.arch.o = LD      $@
 	cmd_ld_vmlinux.arch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $(filter-out FORCE,$^)
 
-$(obj)/vmlinux.arch.o: $(HOST_DIR)/um/built-in.a arch/um/os-Linux/built-in.a FORCE
+$(obj)/vmlinux.arch.o: arch/um/os-Linux/built-in.a FORCE
 	$(call if_changed,ld_vmlinux.arch.o)
 
 targets += vmlinux.arch.o
