@@ -51,14 +51,14 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
 #define cpu_feature_enabled(bit)	\
 	(__builtin_constant_p(bit) && DISABLED_MASK_BIT_SET(bit) ? 0 : static_cpu_has(bit))
 
-#define boot_cpu_has(bit)	cpu_has(&boot_cpu_data, bit)
+#define boot_cpu_has(bit)	cpu_has(&cpuinfo_x86, bit)
 
 #define set_cpu_cap(c, bit)	set_bit(bit, (unsigned long *)((c)->x86_capability))
 
 extern void setup_clear_cpu_cap(unsigned int bit);
 
 #define setup_force_cpu_cap(bit) do { \
-	set_cpu_cap(&boot_cpu_data, bit);	\
+	set_cpu_cap(&cpuinfo_x86, bit);	\
 	set_bit(bit, (unsigned long *)cpu_caps_set);	\
 } while (0)
 
@@ -108,7 +108,7 @@ static __always_inline bool _static_cpu_has(u16 bit)
 		 : : [feature]  "i" (bit),
 		     [always]   "i" (X86_FEATURE_ALWAYS),
 		     [bitnum]   "i" (1 << (bit & 7)),
-		     [cap_byte] "m" (((const char *)boot_cpu_data.x86_capability)[bit >> 3])
+		     [cap_byte] "m" (((const char *)cpuinfo_x86.x86_capability)[bit >> 3])
 		 : : t_yes, t_no);
 t_yes:
 	return true;
@@ -127,8 +127,8 @@ t_no:
 #define set_cpu_bug(c, bit)		set_cpu_cap(c, (bit))
 
 #define static_cpu_has_bug(bit)		static_cpu_has((bit))
-#define boot_cpu_has_bug(bit)		cpu_has_bug(&boot_cpu_data, (bit))
-#define boot_cpu_set_bug(bit)		set_cpu_cap(&boot_cpu_data, (bit))
+#define boot_cpu_has_bug(bit)		cpu_has_bug(&cpuinfo_x86, (bit))
+#define boot_cpu_set_bug(bit)		set_cpu_cap(&cpuinfo_x86, (bit))
 
 #define MAX_CPU_FEATURES		(NCAPINTS * 32)
 #define cpu_have_feature		boot_cpu_has
