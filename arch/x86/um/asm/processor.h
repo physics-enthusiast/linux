@@ -2,7 +2,6 @@
 #ifndef __UM_PROCESSOR_H
 #define __UM_PROCESSOR_H
 #include <linux/time-internal.h>
-#include <linux/seq_file.h>
 
 /* include faultinfo structure */
 #include <sysdep/faultinfo.h>
@@ -41,6 +40,8 @@ static __always_inline void cpu_relax(void)
 
 #include <asm/processor-generic.h>
 #include <asm/cpufeatures.h>
+
+struct seq_file;
 
 struct cpuinfo_x86 {
 	union {
