@@ -271,30 +271,6 @@ EXPORT_SYMBOL(end_iomem);
 
 #define MIN_VMALLOC (32 * 1024 * 1024)
 
-static void parse_host_cpu_flags(char *line)
-{
-	int i;
-	for (i = 0; i < 32*NCAPINTS; i++) {
-		if ((x86_cap_flags[i] != NULL) && strstr(line, x86_cap_flags[i]))
-			set_cpu_cap(&boot_cpu_data, i);
-	}
-}
-static void parse_cache_line(char *line)
-{
-	long res;
-	char *to_parse = strstr(line, ":");
-	if (to_parse) {
-		to_parse++;
-		while (*to_parse != 0 && isspace(*to_parse)) {
-			to_parse++;
-		}
-		if (kstrtoul(to_parse, 10, &res) == 0 && is_power_of_2(res))
-			boot_cpu_data.cache_alignment = res;
-		else
-			boot_cpu_data.cache_alignment = L1_CACHE_BYTES;
-	}
-}
-
 int __init linux_main(int argc, char **argv)
 {
 	unsigned long avail, diff;
@@ -334,8 +310,6 @@ int __init linux_main(int argc, char **argv)
 
 	/* OS sanity checks that need to happen before the kernel runs */
 	os_early_checks();
-
-	get_host_cpu_features(parse_host_cpu_flags, parse_cache_line);
 
 	brk_start = (unsigned long) sbrk(0);
 
