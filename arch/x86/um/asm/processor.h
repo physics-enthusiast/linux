@@ -48,4 +48,6 @@ struct cpuinfo_x86 {
 	};
 };
 
+extern void arch_show_cpuinfo(struct seq_file *m);
+
 #endif
