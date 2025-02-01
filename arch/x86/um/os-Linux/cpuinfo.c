@@ -10,7 +10,7 @@
 #include <asm/cpufeature.h>
 #include <os.h>
 
-void get_host_cpu_features(void)
+void load_host_cpu_features(void)
 {
 	FILE *cpuinfo;
 	char *line = NULL;
