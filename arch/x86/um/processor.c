@@ -13,6 +13,7 @@ EXPORT_SYMBOL(boot_cpu_data_extended);
 void arch_show_cpuinfo(struct seq_file *m)
 {
 	int i;
+
 	seq_printf(m, "fpu\t\t: %s\n", cpu_has(&boot_cpu_data_extended, X86_FEATURE_FPU) ? "yes" : "no");
 	seq_printf(m, "flags\t\t:");
 	for (i = 0; i < 32*NCAPINTS; i++)
