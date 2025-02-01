@@ -3,7 +3,6 @@
 #include <linux/seq_file.h>
 
 #include <asm/cpufeature.h>
-#include <asm/processor.h>
 
 struct cpuinfo_x86 boot_cpu_data_extended = {
 	.x86_capability		= { 0 }
