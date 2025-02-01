@@ -20,7 +20,6 @@
 #include <linux/random.h>
 
 #include <asm/processor.h>
-#include <asm/cpufeature.h>
 #include <asm/sections.h>
 #include <asm/setup.h>
 #include <asm/text-patching.h>
@@ -60,7 +59,6 @@ struct cpuinfo_um boot_cpu_data = {
 	.loops_per_jiffy	= 0,
 	.ipi_pipe		= { -1, -1 },
 	.cache_alignment	= L1_CACHE_BYTES,
-	.x86_capability		= { 0 }
 };
 
 EXPORT_SYMBOL(boot_cpu_data);
@@ -81,12 +79,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 	seq_printf(m, "model name\t: UML\n");
 	seq_printf(m, "mode\t\t: skas\n");
 	seq_printf(m, "host\t\t: %s\n", host_info);
-	seq_printf(m, "fpu\t\t: %s\n", cpu_has(&boot_cpu_data, X86_FEATURE_FPU) ? "yes" : "no");
-	seq_printf(m, "flags\t\t:");
-	for (i = 0; i < 32*NCAPINTS; i++)
-		if (cpu_has(&boot_cpu_data, i) && (x86_cap_flags[i] != NULL))
-			seq_printf(m, " %s", x86_cap_flags[i]);
-	seq_printf(m, "\n");
+	arch_show_cpuinfo(m);
 	seq_printf(m, "cache_alignment\t: %d\n", boot_cpu_data.cache_alignment);
 	seq_printf(m, "bogomips\t: %lu.%02lu\n",
 		   loops_per_jiffy/(500000/HZ),
