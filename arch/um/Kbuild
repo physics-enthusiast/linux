@@ -1,17 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-only
 
-obj-y += kernel/ drivers/ subarch.o
-
-$(HOST_DIR)/um/built-in.a:
-	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um need-builtin=1 need-modorder=1
-
-quiet_cmd_ld_subarch.o = LD      $@
-	cmd_ld_subarch.o = $(LD) ${KBUILD_LDFLAGS} -r -o $@ --whole-archive $(filter-out FORCE,$^)
-
-$(obj)/subarch.o: $(HOST_DIR)/um/built-in.a FORCE
-	$(call if_changed,ld_subarch.o)
-
-targets += subarch.o
+obj-y += kernel/ drivers/
 
 # for cleaning
 subdir- += tools
