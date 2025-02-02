@@ -3,7 +3,7 @@
 # Licensed under the GPL
 #
 
-$(error $(KBUILD_CPPFLAGS))
+$(error $(c_flags))
 
 obj-y = registers.o task_size.o mcontext.o cpuinfo.o
 
