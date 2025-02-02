@@ -3,6 +3,8 @@
 # Licensed under the GPL
 #
 
+$(error $(KBUILD_CPPFLAGS))
+
 obj-y = registers.o task_size.o mcontext.o cpuinfo.o
 
 obj-$(CONFIG_X86_32) += tls.o
