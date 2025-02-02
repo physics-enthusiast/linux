@@ -3,12 +3,12 @@
 # Licensed under the GPL
 #
 
-$(error $(c_flags))
-
-obj-y = registers.o task_size.o mcontext.o cpuinfo.o
+obj-y = registers.o task_size.o mcontext.o
 
 obj-$(CONFIG_X86_32) += tls.o
 
 USER_OBJS := $(obj-y)
+
+obj-y +=  cpuinfo.o
 
 include $(srctree)/arch/um/scripts/Makefile.rules
