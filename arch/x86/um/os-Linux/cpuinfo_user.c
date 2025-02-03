@@ -6,7 +6,7 @@
 #include <os.h>
 #include "cpuinfo_internal.h"
 
-void  __init get_host_cpu_features(
+void get_host_cpu_features(
 		void (*flags_helper_func)(char *line),
 		void (*cache_helper_func)(char *line))
 {
