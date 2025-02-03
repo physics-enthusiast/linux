@@ -3,6 +3,8 @@
 #include <linux/ctype.h>
 #include <linux/kstrtox.h>
 #include <linux/log2.h>
+#include <linux/string.h>
+#include <asm/cache.h>
 #include <asm/cpufeature.h>
 #include <arch.h>
 #include "cpuinfo_internal.h"
@@ -12,7 +14,7 @@ static void parse_host_cpu_flags(char *line)
 	int i;
 	for (i = 0; i < 32*NCAPINTS; i++) {
 		if ((x86_cap_flags[i] != NULL) && strstr(line, x86_cap_flags[i]))
-			set_cpu_cap(&boot_cpu_data, i);
+			set_cpu_cap(&boot_cpu_data_extended, i);
 	}
 }
 static void parse_cache_line(char *line)
