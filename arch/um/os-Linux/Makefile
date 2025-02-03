@@ -12,6 +12,8 @@ obj-y = execvp.o file.o helper.o irq.o main.o mem.o process.o \
 
 obj-y += ../../$(HEADER_ARCH)/um/os-Linux/
 
+ccflags-y += -I$(srctree)/arch/$(HEADER_ARCH)/um/os-Linux/
+
 CFLAGS_signal.o += -Wframe-larger-than=4096
 
 obj-$(CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA) += elf_aux.o
