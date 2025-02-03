@@ -12,6 +12,7 @@
 #include <string.h>
 #include <sys/resource.h>
 #include <as-layout.h>
+#include <arch.h>
 #include <init.h>
 #include <kern_util.h>
 #include <os.h>
