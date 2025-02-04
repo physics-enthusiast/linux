@@ -4,8 +4,8 @@
  * Copyright 2003 PathScale, Inc.
  */
 
-#ifndef __UM_PAGE_H
-#define __UM_PAGE_H
+#ifndef __UM_PAGE_GENERIC_H
+#define __UM_PAGE_GENERIC_H
 
 #include <linux/const.h>
 
@@ -111,9 +111,4 @@ extern unsigned long uml_physmem;
 #include <asm-generic/getorder.h>
 
 #endif	/* __ASSEMBLY__ */
-
-#ifdef CONFIG_X86_32
-#define __HAVE_ARCH_GATE_AREA 1
-#endif
-
-#endif	/* __UM_PAGE_H */
+#endif	/* __UM_PAGE_GENERIC_H */
