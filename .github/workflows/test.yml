@@ -12,7 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          make ARCH=um defconfig
-          make ARCH=um -j$(nproc)
+          sudo apt-get install g++-multilib
+          sudo dpkg --add-architecture i386
+          make ARCH=um SUBARCH=x86_64 defconfig
+          make ARCH=um SUBARCH=x86_64 -j$(nproc) || (make clean && make ARCH=um SUBARCH=x86_64 V=1)
+          make ARCH=um SUBARCH=i386 defconfig
+          make ARCH=um SUBARCH=i386 -j$(nproc) || (make clean && make ARCH=um SUBARCH=i386 V=1)
           make ARCH=um mrproper
           ./tools/testing/kunit/kunit.py run
