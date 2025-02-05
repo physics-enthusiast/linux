@@ -20,17 +20,6 @@
 EXPORT_SYMBOL(strstr);
 #endif
 
-#ifndef __x86_64__
-#undef memcpy
-extern void *memcpy(void *, const void *, size_t);
-EXPORT_SYMBOL(memcpy);
-extern void *memmove(void *, const void *, size_t);
-EXPORT_SYMBOL(memmove);
-#undef memset
-extern void *memset(void *, int, size_t);
-EXPORT_SYMBOL(memset);
-#endif
-
 #ifdef CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA
 /* needed for __access_ok() */
 EXPORT_SYMBOL(vsyscall_ehdr);
