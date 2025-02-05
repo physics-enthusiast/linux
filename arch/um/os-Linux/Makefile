@@ -8,7 +8,7 @@ KCOV_INSTRUMENT                := n
 
 obj-y = execvp.o file.o helper.o irq.o main.o mem.o process.o \
 	registers.o sigio.o signal.o start_up.o time.o tty.o \
-	umid.o user_syms.o util.o drivers/ skas/
+	umid.o util.o drivers/ skas/
 
 obj-y += ../../$(HEADER_ARCH)/um/os-Linux/
 
