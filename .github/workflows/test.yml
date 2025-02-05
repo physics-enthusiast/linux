@@ -7,16 +7,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test1:
+  test-i386:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: |
           sudo dpkg --add-architecture i386
           sudo apt-get update && sudo apt-get install gcc-multilib
-          make ARCH=um SUBARCH=x86_64 defconfig
-          make ARCH=um SUBARCH=x86_64 -j$(nproc) || (make clean && make ARCH=um SUBARCH=x86_64 V=1)
           make ARCH=um SUBARCH=i386 CROSS_COMPILE=i386-linux defconfig
           make ARCH=um SUBARCH=i386 CROSS_COMPILE=i386-linux -j$(nproc) || (make clean && make ARCH=um SUBARCH=i386 CROSS_COMPILE=i386-linux V=1)
+          make ARCH=um mrproper
+          ./tools/testing/kunit/kunit.py run
+
+  test-x86_64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          make ARCH=um SUBARCH=x86_64 defconfig
+          make ARCH=um SUBARCH=x86_64 -j$(nproc) || (make clean && make ARCH=um SUBARCH=x86_64 V=1)
           make ARCH=um mrproper
           ./tools/testing/kunit/kunit.py run
