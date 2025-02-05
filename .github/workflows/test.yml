@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          sudo apt-get install g++-multilib
+          sudo apt-get install gcc-multilib
           sudo dpkg --add-architecture i386
           make ARCH=um SUBARCH=x86_64 defconfig
           make ARCH=um SUBARCH=x86_64 -j$(nproc) || (make clean && make ARCH=um SUBARCH=x86_64 V=1)
