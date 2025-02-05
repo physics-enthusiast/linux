@@ -12,8 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          sudo apt-get install gcc-multilib
           sudo dpkg --add-architecture i386
+          sudo apt-get update && sudo apt-get install ia32-libs gcc-multilib
           make ARCH=um SUBARCH=x86_64 defconfig
           make ARCH=um SUBARCH=x86_64 -j$(nproc) || (make clean && make ARCH=um SUBARCH=x86_64 V=1)
           make ARCH=um SUBARCH=i386 defconfig
