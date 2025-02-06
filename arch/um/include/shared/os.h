@@ -251,7 +251,6 @@ extern void mark_sigio_pending(void);
 /* util.c */
 extern void stack_protections(unsigned long address);
 extern int raw(int fd);
-extern void setup_machinename(char *machine_out);
 extern void setup_hostinfo(char *buf, int len);
 extern ssize_t os_getrandom(void *buf, size_t len, unsigned int flags);
 extern void os_dump_core(void) __attribute__ ((noreturn));
