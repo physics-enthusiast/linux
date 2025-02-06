@@ -47,27 +47,6 @@ int raw(int fd)
 	return 0;
 }
 
-void setup_machinename(char *machine_out)
-{
-	struct utsname host;
-
-	uname(&host);
-#ifdef UML_CONFIG_UML_X86
-# ifndef UML_CONFIG_64BIT
-	if (!strcmp(host.machine, "x86_64")) {
-		strcpy(machine_out, "i686");
-		return;
-	}
-# else
-	if (!strcmp(host.machine, "i686")) {
-		strcpy(machine_out, "x86_64");
-		return;
-	}
-# endif
-#endif
-	strcpy(machine_out, host.machine);
-}
-
 void setup_hostinfo(char *buf, int len)
 {
 	struct utsname host;
