@@ -15,6 +15,7 @@
 #include <sys/mman.h>
 #include <sys/utsname.h>
 #include <sys/random.h>
+#include <arch.h>
 #include <init.h>
 #include <os.h>
 
@@ -45,6 +46,15 @@ int raw(int fd)
 	 * (and cfmakeraw() is a set of changes)
 	 */
 	return 0;
+}
+
+void setup_machinename(char *machine_out)
+{
+	struct utsname host;
+
+	uname(&host);
+	strcpy(machine_out, host.machine);
+	arch_setup_machinename(machine_out);
 }
 
 void setup_hostinfo(char *buf, int len)
