@@ -48,15 +48,6 @@ int raw(int fd)
 	return 0;
 }
 
-void setup_machinename(char *machine_out)
-{
-	struct utsname host;
-
-	uname(&host);
-	strcpy(machine_out, host.machine);
-	arch_setup_machinename(machine_out);
-}
-
 void setup_hostinfo(char *buf, int len)
 {
 	struct utsname host;
