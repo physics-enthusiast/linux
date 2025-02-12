@@ -5,11 +5,11 @@
 
 #include <um_host_arch.h>
 
-struct um_host_info {
+struct boot_params {
 	char machine[65];
-	arch_cpufeatures cpuinfo;
+	arch_boot_params arch_data;
 };
 
-extern struct um_host_info um_host_params;
+extern struct boot_params um_host_params;
 
 #endif
