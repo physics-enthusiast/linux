@@ -111,9 +111,6 @@ endef
 archheaders:
 	$(Q)$(MAKE) -f $(srctree)/Makefile ARCH=$(HEADER_ARCH) asm-generic archheaders
 
-archprepare:
-	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um include/generated/user_constants.h
-
 LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
 ifdef CONFIG_LD_SCRIPT_DYN
 LINK-$(call gcc-min-version, 60100)$(CONFIG_CC_IS_CLANG) += -no-pie
