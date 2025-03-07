@@ -7,6 +7,9 @@
 
 struct boot_params {
 	char machine[65];
+        int nr_cpus;
+        int cache_alignment;
+        int page_shifts[8];
 	arch_boot_params arch_data;
 };
 
