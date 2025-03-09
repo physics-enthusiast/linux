@@ -167,8 +167,6 @@ static const char * const UM_X86_FEATURES_BREAKING[] = {
 static const char * const UM_X86_FEATURES_SYSCALL[] = {
 	"sep",
 	"syscall",
-	"syscall32",
-	"sysenter32"
 };
 
 #endif
