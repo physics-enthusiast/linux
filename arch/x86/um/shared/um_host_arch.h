@@ -152,10 +152,10 @@ static const char * const UM_X86_FEATURES_EXTENSION[] = {
  * want it enabled
  */
 static const char * const UM_X86_FEATURES_BREAKING[] = {
-	"split_lock_detect",
 	"umip",
-	"shstk",
-	"bus_lock_detect"
+	"split_lock_detect",
+	"bus_lock_detect",
+	"shstk"
 };
 
 /*
