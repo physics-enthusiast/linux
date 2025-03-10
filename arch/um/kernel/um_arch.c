@@ -4,6 +4,7 @@
  */
 
 #include <linux/cpu.h>
+#include <linux/cpumask.h>
 #include <linux/delay.h>
 #include <linux/init.h>
 #include <linux/mm.h>
@@ -85,7 +86,7 @@ static char host_info[(__NEW_UTS_LEN + 1) * 5];
 
 static int show_cpuinfo(struct seq_file *m, void *v)
 {
-	int i = 0;
+	int i = *v;
 
 	seq_printf(m, "processor\t: %d\n", i);
 	seq_printf(m, "vendor_id\t: User Mode Linux\n");
@@ -104,7 +105,10 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 
 static void *c_start(struct seq_file *m, loff_t *pos)
 {
-	return *pos < nr_cpu_ids ? &boot_cpu_data + *pos : NULL;
+	*pos = cpumask_next(*pos - 1, cpu_online_mask);
+	if ((*pos) < nr_cpu_ids)
+		return pos;
+	return NULL;
 }
 
 static void *c_next(struct seq_file *m, void *v, loff_t *pos)
