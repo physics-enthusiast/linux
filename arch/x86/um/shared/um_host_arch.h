@@ -7,28 +7,9 @@ struct arch_boot_params {
 	unsigned char x86_model;
 	unsigned char x86_family;
 	unsigned char x86_vendor;
-	/*
-	 * The features_* arrays below must be large enough to contain
-	 * bitfields their respective set of UM_X86_FEATURES_* flags
-	 */
-	unsigned char features_extension[15];
-	unsigned char features_breaking[1];
-	unsigned char features_syscall[1];
 };
 
-/*
- * Host-independent subset of arch/x86/include/asm/cpufeatures.h.
- * Generally, "host-independent" means that it is possible to do useful work
- * in Ring-3 without regularly trapping to Ring-0. Only mark these as available
- * if they are enabled by the host.
- *
- * These are sorted roughly chronologically by when the feature becomes
- * accessible to ring-3. This is generally when support is first merged into
- * the kernel, unless it starts off as a privileged extension that later on
- * allows some degree of unpriviledged interaction (e.g. aperfmperf MSRs
- * becoming readable via RDPRU).
- */
-static const char * const UM_X86_FEATURES_EXTENSION[] = {
+static const char * const UM_ARCH_FEATURES_EXTENSION[] = {
 	"fpu",
 	"cx8",
 	"cpuid",
@@ -144,27 +125,14 @@ static const char * const UM_X86_FEATURES_EXTENSION[] = {
 	"sm4"
 };
 
-/*
- * These are similar to UM_X86_FEATURES_EXTENSION, but they also make certain
- * sequences of instructions globally invalid. If it is possible to enable or
- * disable a particular one on a address-space-by-address-space basis, leave
- * the bit as 0 and use the kernel module to determine which address spaces
- * want it enabled
- */
-static const char * const UM_X86_FEATURES_BREAKING[] = {
+static const char * const UM_ARCH_FEATURES_BREAKING[] = {
 	"umip",
 	"split_lock_detect",
 	"bus_lock_detect",
 	"shstk"
 };
 
-/*
- * We need to intercept all syscalls regardless of the state of these flags to
- * maintain guest/host separation, but specifying them informs userspace
- * programs which read /proc/cpuinfo (instead of calling CPUID) of their
- * availability
- */
-static const char * const UM_X86_FEATURES_SYSCALL[] = {
+static const char * const UM_ARCH_FEATURES_SYSCALL[] = {
 	"sep",
 	"syscall",
 };
