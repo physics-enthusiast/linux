@@ -43,7 +43,7 @@ struct boot_params um_host_params = {
 	.extensions = 		{0},
 	.constraints = 		{0},
 	.syscalls = 		{0},
-	.arch_data = 		UM_SUBARCH_DATA_DEFAULT;
+	.subarch_data = 		UM_SUBARCH_DATA_DEFAULT;
 };
 
 EXPORT_SYMBOL(um_host_params);
