@@ -3,13 +3,13 @@
 #ifndef __UM_HOST_ARCH_H__
 #define __UM_HOST_ARCH_H__
 
-struct arch_boot_params {
+struct um_arch_boot_params {
 	unsigned char x86_model;
 	unsigned char x86_family;
 	unsigned char x86_vendor;
 };
 
-static const char * const UM_ARCH_FEATURES_EXTENSION[] = {
+static const char * const UM_ARCH_EXTENSIONS[] = {
 	"fpu",
 	"cx8",
 	"cpuid",
@@ -125,14 +125,14 @@ static const char * const UM_ARCH_FEATURES_EXTENSION[] = {
 	"sm4"
 };
 
-static const char * const UM_ARCH_FEATURES_BREAKING[] = {
+static const char * const UM_ARCH_CONSTRAINTS[] = {
 	"umip",
 	"split_lock_detect",
 	"bus_lock_detect",
 	"shstk"
 };
 
-static const char * const UM_ARCH_FEATURES_SYSCALL[] = {
+static const char * const UM_ARCH_SYSCALLS[] = {
 	"sep",
 	"syscall",
 };
