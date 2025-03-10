@@ -9,6 +9,8 @@ struct um_arch_boot_params {
 	unsigned char x86_vendor;
 };
 
+static const struct um_arch_boot_params UM_ARCH_DATA_DEFAULT = {0};
+
 static const char * const UM_ARCH_EXTENSIONS[] = {
 	"fpu",
 	"cx8",
