@@ -6,15 +6,17 @@
 #include <um_host_arch.h>
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+#define DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
+#define BITFIELD_SIZE_CHAR(x) DIV_ROUND_UP(ARRAY_SIZE(x), CHAR_BIT)
 
 struct boot_params {
 	char machine[65];
 	int nr_cpus;
 	int cache_alignment;
 	int page_shifts[8];
-	char extensions[ARRAY_SIZE(UM_ARCH_EXTENSIONS)];
-	char constraints[ARRAY_SIZE(UM_ARCH_CONSTRAINTS)];
-	char syscalls[ARRAY_SIZE(UM_ARCH_SYSCALLS)];
+	char extensions[BITFIELD_SIZE_CHAR(UM_ARCH_EXTENSIONS)];
+	char constraints[BITFIELD_SIZE_CHAR(UM_ARCH_CONSTRAINTS)];
+	char syscalls[BITFIELD_SIZE_CHAR(UM_ARCH_SYSCALLS)];
 	um_arch_boot_params arch_data;
 };
 
