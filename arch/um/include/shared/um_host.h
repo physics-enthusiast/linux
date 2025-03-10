@@ -17,7 +17,7 @@ struct boot_params {
 	char extensions[BITFIELD_SIZE_CHAR(UM_SUBARCH_EXTENSIONS)];
 	char constraints[BITFIELD_SIZE_CHAR(UM_SUBARCH_CONSTRAINTS)];
 	char syscalls[BITFIELD_SIZE_CHAR(UM_SUBARCH_SYSCALLS)];
-	um_subarch_boot_params arch_data;
+	um_subarch_boot_params subarch_data;
 };
 
 extern struct boot_params um_host_params;
