@@ -133,5 +133,10 @@ t_no:
 #define MAX_CPU_FEATURES		(NCAPINTS * 32)
 #define cpu_have_feature		boot_cpu_has
 
+#define CPU_FEATURE_TYPEFMT		"x86,ven%04Xfam%04Xmod%04X"
+#define CPU_FEATURE_TYPEVAL		um_host_params.subarch_data.x86_vendor, \
+					um_host_params.subarch_data.x86_family, \
+					um_host_params.subarch_data.x86_model
+
 #endif /* defined(__KERNEL__) && !defined(__ASSEMBLY__) */
 #endif /* _ASM_UM_CPUFEATURE_H */
