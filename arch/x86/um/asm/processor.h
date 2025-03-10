@@ -52,7 +52,7 @@ struct cpuinfo_x86 {
 
 extern struct cpuinfo_x86 boot_cpu_data;
 
-extern void subarch_setup(void);
-extern void subarch_cpuinfo(struct seq_file *m);
+extern void um_subarch_setup(void);
+extern void um_subarch_cpuinfo(struct seq_file *m);
 
 #endif
