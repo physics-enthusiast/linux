@@ -48,7 +48,6 @@ struct boot_params um_host_params = {
 
 EXPORT_SYMBOL(um_host_params);
 
-
 #define DEFAULT_COMMAND_LINE_ROOT "root=98:0"
 #define DEFAULT_COMMAND_LINE_CONSOLE "console=tty0"
 
