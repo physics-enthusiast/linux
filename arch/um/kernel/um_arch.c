@@ -36,15 +36,17 @@
 #include "um_arch.h"
 
 struct boot_params um_host_params = {
-	.machine = UTS_MACHINE,
-	.nr_cpus = 1,
-	.cache_alignment = L1_CACHE_BYTES,
-	.page_shifts = {0},
-	.extensions = {0},
-	.constraints = {0},
-	.syscalls = {0},
-	.arch_data = UM_ARCH_DATA_DEFAULT;
+	.machine = 		UTS_MACHINE,
+	.nr_cpus = 		1,
+	.cache_alignment = 	L1_CACHE_BYTES,
+	.page_shifts = 		{0},
+	.extensions = 		{0},
+	.constraints = 		{0},
+	.syscalls = 		{0},
+	.arch_data = 		UM_ARCH_DATA_DEFAULT;
 };
+
+EXPORT_SYMBOL(um_host_params);
 
 
 #define DEFAULT_COMMAND_LINE_ROOT "root=98:0"
@@ -64,19 +66,6 @@ static void __init add_arg(char *arg)
 	strcat(command_line, arg);
 }
 
-/*
- * These fields are initialized at boot time and not changed.
- * XXX This structure is used only in the non-SMP case.  Maybe this
- * should be moved to smp.c.
- */
-struct cpuinfo_um boot_cpu_data = {
-	.loops_per_jiffy	= 0,
-	.ipi_pipe		= { -1, -1 },
-	.cache_alignment	= L1_CACHE_BYTES,
-};
-
-EXPORT_SYMBOL(boot_cpu_data);
-
 union thread_union cpu0_irqstack
 	__section(".data..init_irqstack") =
 		{ .thread_info = INIT_THREAD_INFO(init_task) };
@@ -94,7 +83,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 	seq_printf(m, "mode\t\t: skas\n");
 	seq_printf(m, "host\t\t: %s\n", host_info);
 	arch_show_cpuinfo(m);
-	seq_printf(m, "cache_alignment\t: %d\n", boot_cpu_data.cache_alignment);
+	seq_printf(m, "cache_alignment\t: %d\n", um_host_params.cache_alignment);
 	seq_printf(m, "bogomips\t: %lu.%02lu\n",
 		   loops_per_jiffy/(500000/HZ),
 		   (loops_per_jiffy/(5000/HZ)) % 100);
