@@ -399,6 +399,8 @@ void __init setup_arch(char **cmdline_p)
 		add_bootloader_randomness(rng_seed, sizeof(rng_seed));
 		memzero_explicit(rng_seed, sizeof(rng_seed));
 	}
+
+	um_subarch_setup();
 }
 
 void __init arch_cpu_finalize_init(void)
