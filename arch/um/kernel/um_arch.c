@@ -30,8 +30,21 @@
 #include <kern_util.h>
 #include <mem_user.h>
 #include <os.h>
+#include <um_host.h>
 
 #include "um_arch.h"
+
+struct boot_params um_host_params = {
+	.machine = UTS_MACHINE,
+	.nr_cpus = 1,
+	.cache_alignment = L1_CACHE_BYTES,
+	.page_shifts = {0},
+	.extensions = {0},
+	.constraints = {0},
+	.syscalls = {0},
+	.arch_data = UM_ARCH_DATA_DEFAULT;
+};
+
 
 #define DEFAULT_COMMAND_LINE_ROOT "root=98:0"
 #define DEFAULT_COMMAND_LINE_CONSOLE "console=tty0"
