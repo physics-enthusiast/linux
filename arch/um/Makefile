@@ -43,7 +43,9 @@ core-y += $(HOST_DIR)/um/
 
 SHARED_HEADERS	:= $(ARCH_DIR)/include/shared
 ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
+ARCH_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/interface
 ARCH_INCLUDE	+= -I$(srctree)/$(HOST_DIR)/um/shared
+ARCH_INCLUDE	+= -I$(srctree)/$(HOST_DIR)/um/interface
 LINUXINCLUDE	:= -I$(srctree)/$(HOST_DIR)/um $(LINUXINCLUDE)
 
 # -Dvmap=kernel_vmap prevents anything from referencing the libpcap.o symbol so
