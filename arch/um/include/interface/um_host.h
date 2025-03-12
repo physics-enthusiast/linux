@@ -14,9 +14,9 @@ struct boot_params {
 	int nr_cpus;
 	int cache_alignment;
 	int page_shifts[8];
-	char extensions[BITFIELD_SIZE_CHAR(UM_SUBARCH_EXTENSIONS)];
-	char constraints[BITFIELD_SIZE_CHAR(UM_SUBARCH_CONSTRAINTS)];
-	char syscalls[BITFIELD_SIZE_CHAR(UM_SUBARCH_SYSCALLS)];
+	unsigned char extensions[BITFIELD_SIZE_CHAR(UM_SUBARCH_EXTENSIONS)];
+	unsigned char constraints[BITFIELD_SIZE_CHAR(UM_SUBARCH_CONSTRAINTS)];
+	unsigned char syscalls[BITFIELD_SIZE_CHAR(UM_SUBARCH_SYSCALLS)];
 	um_subarch_boot_params subarch_data;
 };
 
