@@ -28,8 +28,8 @@ void um_subarch_setup(void)
 		if (x86_cap_flags[i] != NULL) {
 			flag = x86_cap_flags[i];
 			x86_cap_nodes[i].idx = i;
-			x86_cap_nodes[i].flag = ;
+			x86_cap_nodes[i].flag = flag;
 			hash = full_name_hash(NULL, flag, strlen(flag));
-			hash_add(x86_cap_dict, &x86_cap_nodes[i].node, hash)
+			hash_add(x86_cap_dict, &x86_cap_nodes[i].node, hash);
 	}
 }
