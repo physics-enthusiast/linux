@@ -339,4 +339,7 @@ extern void um_trace_signals_off(void);
 /* time-travel */
 extern void deliver_time_travel_irqs(void);
 
+/* subarch */
+extern void os_subarch_load_cpuinfo(void);
+
 #endif
