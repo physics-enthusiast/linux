@@ -41,8 +41,6 @@ static __always_inline void cpu_relax(void)
 #include <asm/processor-generic.h>
 #include <asm/cpufeatures.h>
 
-struct seq_file;
-
 struct cpuinfo_x86 {
 	union {
 		__u32		x86_capability[NCAPINTS + NBUGINTS];
