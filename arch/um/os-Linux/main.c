@@ -141,6 +141,7 @@ int __init main(int argc, char **argv, char **envp)
 #endif
 
 	change_sig(SIGPIPE, 0);
+	os_subarch_load_cpuinfo();
 	ret = linux_main(argc, argv);
 
 	/*
