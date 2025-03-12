@@ -74,4 +74,8 @@ extern void start_thread(struct pt_regs *regs, unsigned long entry,
 #define KSTK_REG(tsk, reg) get_thread_reg(reg, &tsk->thread.switch_buf)
 extern unsigned long __get_wchan(struct task_struct *p);
 
+struct seq_file;
+
+extern void um_subarch_cpuinfo(struct seq_file *m);
+
 #endif
