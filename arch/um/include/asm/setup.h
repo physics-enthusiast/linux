@@ -8,4 +8,6 @@
 
 #define COMMAND_LINE_SIZE 4096
 
+extern void um_subarch_setup(void);
+
 #endif		/* SETUP_H_INCLUDED */
