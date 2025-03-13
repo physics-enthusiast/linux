@@ -380,9 +380,31 @@ int __init __weak read_initrd(void)
 	return 0;
 }
 
+struct um_subarch_capability um_subarch_caps[UM_SUBARCH_CAP_COUNT];
+
+static void __init load_bitmap_into_hashtable(char **cap_flag_array,
+					      unsigned int *cap_present_bitmap,
+					      int len, int *idx)
+{
+	int i;
+	char *flag;
+	bool present;
+	unsigned int hash;
+	for (i = 0; i < len; i++) {
+		flag = (*cap_flag_array_ptr)[i];
+		present = test_bit(i, cap_present_bitmap_ptr);
+		um_subarch_caps[*idx].flag = flag;
+		um_subarch_caps[*idx].present = present;
+		hash = full_name_hash(NULL, flag, strlen(flag));
+		hash_add(um_subarch_cap_dict, &um_subarch_caps[i].node, hash);
+		(*idx)++;
+	};
+}
+
 void __init setup_arch(char **cmdline_p)
 {
 	u8 rng_seed[32];
+	int idx = 0;
 
 	stack_protections((unsigned long) &init_thread_info);
 	setup_physmem(uml_physmem, uml_reserved, physmem_size, highmem);
@@ -400,6 +422,17 @@ void __init setup_arch(char **cmdline_p)
 		memzero_explicit(rng_seed, sizeof(rng_seed));
 	}
 
+	hash_init(um_subarch_cap_dict);
+	load_bitmap_into_hashtable(UM_SUBARCH_EXTENSIONS,
+				   um_host_params.extensions,
+				   ARRAY_SIZE(UM_SUBARCH_EXTENSIONS), &idx);
+	load_bitmap_into_hashtable(UM_SUBARCH_CONSTRAINTS,
+				   um_host_params.constraints,
+				   ARRAY_SIZE(UM_SUBARCH_CONSTRAINTS), &idx);
+	load_bitmap_into_hashtable(UM_SUBARCH_SYSCALLS,
+				   um_host_params.syscalls,
+				   ARRAY_SIZE(UM_SUBARCH_SYSCALLS), &idx);
+	};
 	um_subarch_setup();
 }
 
