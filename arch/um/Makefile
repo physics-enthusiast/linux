@@ -80,7 +80,8 @@ include $(srctree)/$(ARCH_DIR)/Makefile-os-Linux
 KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
 		   -I$(srctree)/$(HOST_DIR)/include/uapi \
 		   -I$(objtree)/$(HOST_DIR)/include/generated \
-		   -I$(objtree)/$(HOST_DIR)/include/generated/uapi
+		   -I$(objtree)/$(HOST_DIR)/include/generated/uapi \
+		   -I$(objtree)/$(HOST_DIR)/um/generated
 
 # -Derrno=kernel_errno - This turns all kernel references to errno into
 # kernel_errno to separate them from the libc errno.  This allows -fno-common
