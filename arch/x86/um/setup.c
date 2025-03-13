@@ -15,8 +15,10 @@ void um_subarch_setup(void)
 		if (x86_cap_flags[i] != NULL) {
 			flag = x86_cap_flags[i];
 			hash = full_name_hash(NULL, flag, strlen(flag));
-			hash_for_each_possible(um_subarch_cap_dict, current, node, hash){
-				
+			hash_for_each_possible(um_subarch_cap_dict, current, node, hash) {
+				if (!strcmp(cur->flag, flag) && cur->present)
+					set_cpu_cap(&boot_cpu_data, i);
 			}
+		}
 	}
 }
