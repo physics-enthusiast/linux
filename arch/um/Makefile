@@ -46,7 +46,11 @@ ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
 ARCH_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/interface
 ARCH_INCLUDE	+= -I$(srctree)/$(HOST_DIR)/um/shared
 ARCH_INCLUDE	+= -I$(srctree)/$(HOST_DIR)/um/interface
-LINUXINCLUDE	:= -I$(srctree)/$(HOST_DIR)/um $(LINUXINCLUDE)
+
+LINUXINCLUDE	:= \
+		-I$(srctree)/$(HOST_DIR)/um \
+		-I$(objtree)/$(HOST_DIR)/um/generated \
+		$(LINUXINCLUDE)
 
 # -Dvmap=kernel_vmap prevents anything from referencing the libpcap.o symbol so
 # named - it's a common symbol in libpcap, so we get a binary which crashes.
