@@ -15,7 +15,7 @@
 
 struct um_subarch_capability {
 	char *flag;
-	bool enabled;
+	bool present;
 	struct hlist_node node;
 };
 
