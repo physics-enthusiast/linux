@@ -3,7 +3,6 @@
 #define SETUP_H_INCLUDED
 
 #include <linux/hashtable.h>
-#include <linux/log2.h>
 
 #include <um_host.h>
 
