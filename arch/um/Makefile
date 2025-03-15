@@ -37,7 +37,7 @@ endif
 HOST_DIR := arch/$(HEADER_ARCH)
 
 include $(srctree)/$(ARCH_DIR)/Makefile-skas
-include $(srctree)/$(HOST_DIR)/Makefile.um
+include $(srctree)/$(HOST_DIR)/um/Makefile
 
 core-y += $(HOST_DIR)/um/
 
