@@ -1,0 +1,30 @@
+name: Test
+on:
+  push:
+  workflow_dispatch:
+concurrency:
+  group: test
+  cancel-in-progress: true
+
+jobs:
+  test-i386:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update && sudo apt-get install gcc-multilib
+          make ARCH=um SUBARCH=i386 defconfig
+          make ARCH=um SUBARCH=i386 -j$(nproc) || make ARCH=um SUBARCH=i386 V=1
+          make ARCH=um mrproper
+          ./tools/testing/kunit/kunit.py run --jobs=`nproc --all`
+
+  test-x86_64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          make ARCH=um SUBARCH=x86_64 defconfig
+          make ARCH=um SUBARCH=x86_64 -j$(nproc) || make ARCH=um SUBARCH=x86_64 V=1
+          make ARCH=um mrproper
+          ./tools/testing/kunit/kunit.py run --jobs=`nproc --all`
