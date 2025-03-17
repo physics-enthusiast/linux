@@ -12,10 +12,9 @@ struct task_struct;
 
 #include <asm/ptrace.h>
 #include <sysdep/archsetjmp.h>
+#include <um_host.h>
 
 #include <linux/prefetch.h>
-
-#include <asm/cpufeatures.h>
 
 struct mm_struct;
 
@@ -68,23 +67,15 @@ extern unsigned long stacksizelim;
 extern void start_thread(struct pt_regs *regs, unsigned long entry, 
 			 unsigned long stack);
 
-struct cpuinfo_um {
-	unsigned long loops_per_jiffy;
-	int ipi_pipe[2];
-	int cache_alignment;
-	union {
-		__u32		x86_capability[NCAPINTS + NBUGINTS];
-		unsigned long	x86_capability_alignment;
-	};
-};
-
-extern struct cpuinfo_um boot_cpu_data;
-
-#define cpu_data(cpu)    boot_cpu_data
-#define current_cpu_data boot_cpu_data
-#define cache_line_size()	(boot_cpu_data.cache_alignment)
+#define cpu_data(cpu)    um_host_params
+#define current_cpu_data um_host_params
+#define cache_line_size()	(um_host_params.cache_alignment)
 
 #define KSTK_REG(tsk, reg) get_thread_reg(reg, &tsk->thread.switch_buf)
 extern unsigned long __get_wchan(struct task_struct *p);
+
+struct seq_file;
+
+extern void um_subarch_cpuinfo(struct seq_file *m);
 
 #endif

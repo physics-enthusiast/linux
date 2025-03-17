@@ -3,7 +3,9 @@
  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
  */
 
+#include <generated/compile.h>
 #include <linux/cpu.h>
+#include <linux/cpumask.h>
 #include <linux/delay.h>
 #include <linux/init.h>
 #include <linux/mm.h>
@@ -12,6 +14,7 @@
 #include <linux/panic_notifier.h>
 #include <linux/seq_file.h>
 #include <linux/string.h>
+#include <linux/stringhash.h>
 #include <linux/utsname.h>
 #include <linux/sched.h>
 #include <linux/sched/task.h>
@@ -20,7 +23,6 @@
 #include <linux/random.h>
 
 #include <asm/processor.h>
-#include <asm/cpufeature.h>
 #include <asm/sections.h>
 #include <asm/setup.h>
 #include <asm/text-patching.h>
@@ -31,8 +33,22 @@
 #include <kern_util.h>
 #include <mem_user.h>
 #include <os.h>
+#include <um_host.h>
 
 #include "um_arch.h"
+
+struct boot_params um_host_params = {
+	.machine = 		UTS_MACHINE,
+	.nr_cpus = 		1,
+	.cache_alignment = 	L1_CACHE_BYTES,
+	.page_shifts = 		{0},
+	.extensions = 		{0},
+	.constraints = 		{0},
+	.syscalls = 		{0},
+	.subarch_data = 	UM_SUBARCH_DATA_INITIALIZER
+};
+
+EXPORT_SYMBOL(um_host_params);
 
 #define DEFAULT_COMMAND_LINE_ROOT "root=98:0"
 #define DEFAULT_COMMAND_LINE_CONSOLE "console=tty0"
@@ -51,20 +67,6 @@ static void __init add_arg(char *arg)
 	strcat(command_line, arg);
 }
 
-/*
- * These fields are initialized at boot time and not changed.
- * XXX This structure is used only in the non-SMP case.  Maybe this
- * should be moved to smp.c.
- */
-struct cpuinfo_um boot_cpu_data = {
-	.loops_per_jiffy	= 0,
-	.ipi_pipe		= { -1, -1 },
-	.cache_alignment	= L1_CACHE_BYTES,
-	.x86_capability		= { 0 }
-};
-
-EXPORT_SYMBOL(boot_cpu_data);
-
 union thread_union cpu0_irqstack
 	__section(".data..init_irqstack") =
 		{ .thread_info = INIT_THREAD_INFO(init_task) };
@@ -74,20 +76,15 @@ static char host_info[(__NEW_UTS_LEN + 1) * 5];
 
 static int show_cpuinfo(struct seq_file *m, void *v)
 {
-	int i = 0;
+	int i = *(int *)v;
 
 	seq_printf(m, "processor\t: %d\n", i);
 	seq_printf(m, "vendor_id\t: User Mode Linux\n");
 	seq_printf(m, "model name\t: UML\n");
 	seq_printf(m, "mode\t\t: skas\n");
 	seq_printf(m, "host\t\t: %s\n", host_info);
-	seq_printf(m, "fpu\t\t: %s\n", cpu_has(&boot_cpu_data, X86_FEATURE_FPU) ? "yes" : "no");
-	seq_printf(m, "flags\t\t:");
-	for (i = 0; i < 32*NCAPINTS; i++)
-		if (cpu_has(&boot_cpu_data, i) && (x86_cap_flags[i] != NULL))
-			seq_printf(m, " %s", x86_cap_flags[i]);
-	seq_printf(m, "\n");
-	seq_printf(m, "cache_alignment\t: %d\n", boot_cpu_data.cache_alignment);
+	um_subarch_cpuinfo(m);
+	seq_printf(m, "cache_alignment\t: %d\n", um_host_params.cache_alignment);
 	seq_printf(m, "bogomips\t: %lu.%02lu\n",
 		   loops_per_jiffy/(500000/HZ),
 		   (loops_per_jiffy/(5000/HZ)) % 100);
@@ -98,7 +95,10 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 
 static void *c_start(struct seq_file *m, loff_t *pos)
 {
-	return *pos < nr_cpu_ids ? &boot_cpu_data + *pos : NULL;
+	*pos = cpumask_next(*pos - 1, cpu_online_mask);
+	if ((*pos) < nr_cpu_ids)
+		return pos;
+	return NULL;
 }
 
 static void *c_next(struct seq_file *m, void *v, loff_t *pos)
@@ -278,30 +278,6 @@ EXPORT_SYMBOL(end_iomem);
 
 #define MIN_VMALLOC (32 * 1024 * 1024)
 
-static void parse_host_cpu_flags(char *line)
-{
-	int i;
-	for (i = 0; i < 32*NCAPINTS; i++) {
-		if ((x86_cap_flags[i] != NULL) && strstr(line, x86_cap_flags[i]))
-			set_cpu_cap(&boot_cpu_data, i);
-	}
-}
-static void parse_cache_line(char *line)
-{
-	long res;
-	char *to_parse = strstr(line, ":");
-	if (to_parse) {
-		to_parse++;
-		while (*to_parse != 0 && isspace(*to_parse)) {
-			to_parse++;
-		}
-		if (kstrtoul(to_parse, 10, &res) == 0 && is_power_of_2(res))
-			boot_cpu_data.cache_alignment = res;
-		else
-			boot_cpu_data.cache_alignment = L1_CACHE_BYTES;
-	}
-}
-
 int __init linux_main(int argc, char **argv)
 {
 	unsigned long avail, diff;
@@ -342,8 +318,6 @@ int __init linux_main(int argc, char **argv)
 	/* OS sanity checks that need to happen before the kernel runs */
 	os_early_checks();
 
-	get_host_cpu_features(parse_host_cpu_flags, parse_cache_line);
-
 	brk_start = (unsigned long) sbrk(0);
 
 	/*
@@ -364,7 +338,7 @@ int __init linux_main(int argc, char **argv)
 	/* Reserve up to 4M after the current brk */
 	uml_reserved = ROUND_4M(brk_start) + (1 << 22);
 
-	setup_machinename(init_utsname()->machine);
+	strcpy(init_utsname()->machine, um_host_params.machine);
 
 	highmem = 0;
 	iomem_size = (iomem_size + PAGE_SIZE - 1) & PAGE_MASK;
@@ -408,9 +382,32 @@ int __init __weak read_initrd(void)
 	return 0;
 }
 
+struct um_subarch_capability um_subarch_caps[UM_SUBARCH_CAP_COUNT];
+DECLARE_HASHTABLE(um_subarch_cap_dict, UM_SUBARCH_CAP_HASH_BITS);
+
+static void __init load_bitmap_into_hashtable(const char * const *cap_flag_array,
+					      unsigned char *cap_present_bitmap,
+					      int len, int *idx)
+{
+	int i;
+	const char * flag;
+	bool present;
+	unsigned int hash;
+	for (i = 0; i < len; i++) {
+		flag = &(*cap_flag_array)[i];
+		present = test_bit(i, (unsigned long *)cap_present_bitmap);
+		um_subarch_caps[*idx].flag = flag;
+		um_subarch_caps[*idx].present = present;
+		hash = full_name_hash(NULL, flag, strlen(flag));
+		hash_add(um_subarch_cap_dict, &um_subarch_caps[i].node, hash);
+		(*idx)++;
+	};
+}
+
 void __init setup_arch(char **cmdline_p)
 {
 	u8 rng_seed[32];
+	int idx = 0;
 
 	stack_protections((unsigned long) &init_thread_info);
 	setup_physmem(uml_physmem, uml_reserved, physmem_size, highmem);
@@ -427,6 +424,18 @@ void __init setup_arch(char **cmdline_p)
 		add_bootloader_randomness(rng_seed, sizeof(rng_seed));
 		memzero_explicit(rng_seed, sizeof(rng_seed));
 	}
+
+	hash_init(um_subarch_cap_dict);
+	load_bitmap_into_hashtable(UM_SUBARCH_EXTENSIONS,
+				   um_host_params.extensions,
+				   ARRAY_SIZE(UM_SUBARCH_EXTENSIONS), &idx);
+	load_bitmap_into_hashtable(UM_SUBARCH_CONSTRAINTS,
+				   um_host_params.constraints,
+				   ARRAY_SIZE(UM_SUBARCH_CONSTRAINTS), &idx);
+	load_bitmap_into_hashtable(UM_SUBARCH_SYSCALLS,
+				   um_host_params.syscalls,
+				   ARRAY_SIZE(UM_SUBARCH_SYSCALLS), &idx);
+	um_subarch_setup();
 }
 
 void __init arch_cpu_finalize_init(void)

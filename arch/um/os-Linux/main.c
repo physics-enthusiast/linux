@@ -11,10 +11,13 @@
 #include <signal.h>
 #include <string.h>
 #include <sys/resource.h>
+#include <sys/utsname.h>
 #include <as-layout.h>
+#include <arch.h>
 #include <init.h>
 #include <kern_util.h>
 #include <os.h>
+#include <um_host.h>
 #include <um_malloc.h>
 #include "internal.h"
 
@@ -103,6 +106,15 @@ static void setup_env_path(void)
 	}
 }
 
+static void setup_machinename(void)
+{
+	struct utsname host;
+
+	uname(&host);
+	strncpy(um_host_params.machine, host.machine,
+		sizeof(um_host_params.machine));
+}
+
 int __init main(int argc, char **argv, char **envp)
 {
 	char **new_argv;
@@ -140,6 +152,8 @@ int __init main(int argc, char **argv, char **envp)
 #endif
 
 	change_sig(SIGPIPE, 0);
+	setup_machinename();
+	os_subarch_load_cpuinfo();
 	ret = linux_main(argc, argv);
 
 	/*
