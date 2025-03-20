@@ -59,3 +59,6 @@ LINK-$(CONFIG_LD_SCRIPT_DYN_RPATH) += -Wl,-rpath,/lib64
 LINK-y += -m64
 
 endif
+
+subarchprepare:
+	$(Q)$(MAKE) $(build)=arch/x86/um include/generated/user_constants.h

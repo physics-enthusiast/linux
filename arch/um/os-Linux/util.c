@@ -15,6 +15,7 @@
 #include <sys/mman.h>
 #include <sys/utsname.h>
 #include <sys/random.h>
+#include <arch.h>
 #include <init.h>
 #include <os.h>
 
@@ -45,27 +46,6 @@ int raw(int fd)
 	 * (and cfmakeraw() is a set of changes)
 	 */
 	return 0;
-}
-
-void setup_machinename(char *machine_out)
-{
-	struct utsname host;
-
-	uname(&host);
-#if IS_ENABLED(CONFIG_UML_X86)
-# if !IS_ENABLED(CONFIG_64BIT)
-	if (!strcmp(host.machine, "x86_64")) {
-		strcpy(machine_out, "i686");
-		return;
-	}
-# else
-	if (!strcmp(host.machine, "i686")) {
-		strcpy(machine_out, "x86_64");
-		return;
-	}
-# endif
-#endif
-	strcpy(machine_out, host.machine);
 }
 
 void setup_hostinfo(char *buf, int len)
